@@ -14,11 +14,11 @@ module.exports = (sequelize, DataTypes) => {
                     name: "merchant_id",
                 },
             });
-            // Product.belongsTo(models.Category, {
-            //     foreignKey: {
-            //         name: "category_id",
-            //     },
-            // });
+            Product.belongsTo(models.Category, {
+                foreignKey: {
+                    name: "Category_id",
+                },
+            });
         }
     }
     Product.init(
