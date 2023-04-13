@@ -51,6 +51,14 @@ export const Navbar = () => {
                 {token ? (
                     <>
                         {/* <Text>test</Text> */}
+                        <Button
+                            colorScheme="teal"
+                            variant="solid"
+                            mr="2"
+                            onClick={() => navigate("/registerMerchant")}
+                        >
+                            Register Merchant
+                        </Button>
                         <Menu>
                             <Button
                                 as={MenuButton}

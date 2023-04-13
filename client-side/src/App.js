@@ -5,6 +5,7 @@ import { LoginForm } from "./pages/login";
 import { RegistrationForm } from "./pages/register";
 import { ProfilePage } from "./pages/profilePage";
 import { AdminForm } from "./pages/adminForm";
+import { RegisterMerchant } from "./pages/merchant";
 import Admin from "./pages/admin";
 
 const router = createBrowserRouter([
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
     { path: "/profile", element: <ProfilePage /> },
     { path: "/admin", element: <Admin /> },
     { path: "/adminForm", element: <AdminForm /> },
+    { path: "/registerMerchant", element: <RegisterMerchant /> },
 ]);
 
 function App() {
