@@ -1,60 +1,104 @@
-import { Button, Flex, VStack, Menu, MenuButton, Avatar, MenuList, MenuItem, Text } from "@chakra-ui/react";
+import {
+    Button,
+    Flex,
+    VStack,
+    Text,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+} from "@chakra-ui/react";
+
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from 'react-redux';
-import { removeUserData } from "../redux/userSlice.js"
+
+//importan redux
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/userSlice";
 
 export const Navbar = () => {
-  const navigate = useNavigate();
-  const userData = useSelector((state) => state.user.value);
-  const dispatch = useDispatch();
-  const token = localStorage.getItem("token");
+    const { username, merchant_status } = useSelector(
+        (state) => state.userSlice.value
+    );
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-  const onSignOut = () => {
-    localStorage.removeItem("token")
-    dispatch(removeUserData());
-    navigate("/login")
-  }
+    const token = localStorage.getItem("token");
 
-  return (
-    <VStack justify='space-evenly' align='flex-end' shadow="base" bgColor="gray.50" w="100vw" h="16">
-      <Flex justify='space-evenly' align="center" mr="4">
-        {token? (
-          <>
-            <Menu>
-              <Avatar
-              as={MenuButton}
-                name="Dan Abrahmov"
-                src="https://bit.ly/dan-abramov"
-                mr="2"
-              />
-              <MenuList>
-                <MenuItem onClick={() => navigate("/")}>Home</MenuItem>
-                <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
-                <MenuItem onClick={onSignOut}>Sign Out</MenuItem>
-              </MenuList>
-            </Menu>
-            <Text as="b">Welcome, {userData.firstName}</Text>
-          </>
-        ) : (
-          <>
-            <Button
-              onClick={() => navigate("/login")}
-              rounded={"full"}
-              bg={"blue.400"}
-              color={"white"}
-              _hover={{
-                bg: "blue.500",
-              }}
-              mr='2'
-            >
-              Login
-            </Button>
-            <Button mr='2' rounded={"full"} onClick={() => navigate("/register")}>
-              Register
-            </Button>
-          </>
-        )}
-      </Flex>
-    </VStack>
-  );
+    const onSignOut = () => {
+        dispatch(logout());
+        localStorage.removeItem("token");
+        navigate("/login");
+    };
+
+    const addProductPage = () => {
+        if (merchant_status) {
+            navigate("/admin");
+        } else {
+            alert("You need to be a merchant");
+        }
+    };
+
+    return (
+        <VStack
+            justify="space-evenly"
+            align="flex-end"
+            shadow="base"
+            bgColor="gray.50"
+            w="100vw"
+            h="16"
+        >
+            <Flex justify="space-evenly" align="center" mr="4">
+                {token ? (
+                    <>
+                        {/* <Text>test</Text> */}
+                        <Menu>
+                            <Button
+                                as={MenuButton}
+                                mr="2"
+                                colorScheme="teal"
+                                variant="solid"
+                            >
+                                Menu
+                            </Button>
+                            <MenuList>
+                                <MenuItem onClick={() => navigate("/profile")}>
+                                    Profile
+                                </MenuItem>
+                                <MenuItem>Setting</MenuItem>
+                                <MenuItem onClick={addProductPage}>
+                                    Sell a Product
+                                </MenuItem>
+                                <MenuItem onClick={onSignOut}>
+                                    Sign Out
+                                </MenuItem>
+                            </MenuList>
+                        </Menu>
+                        <Text as="b">Welcome, {username}</Text>
+                    </>
+                ) : (
+                    <>
+                        <Button
+                            onClick={() => navigate("/login")}
+                            rounded={"full"}
+                            bg={"blue.400"}
+                            color={"white"}
+                            _hover={{
+                                bg: "blue.500",
+                            }}
+                            mr="2"
+                        >
+                            Login
+                        </Button>
+                        <Button
+                            mr="2"
+                            rounded={"full"}
+                            onClick={() => navigate("/register")}
+                        >
+                            Register
+                        </Button>
+                    </>
+                )}
+            </Flex>
+        </VStack>
+    );
 };
