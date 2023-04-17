@@ -2,6 +2,8 @@ const db = require("../models");
 const jwt = require("jsonwebtoken");
 const merchant = db.Merchant;
 const user = db.User;
+const product = db.Product;
+const category = db.Category;
 
 module.exports = {
     register: async (req, res) => {
@@ -36,7 +38,8 @@ module.exports = {
                 res.status(200).send({
                     status: true,
                     data: result,
-                    message: "successfully registered as a merchant",
+                    message:
+                        "Successfully registered as a merchant, please relog.",
                 });
             } else {
                 throw "one account can only have one merchant";
@@ -53,6 +56,29 @@ module.exports = {
                     },
                 }
             );
+        } catch (err) {
+            console.log(err);
+            res.status(400).send(err);
+        }
+    },
+    merchantProducts: async (req, res) => {
+        try {
+            const result = await product.findAll({
+                where: { merchant_id: req.params.id },
+                include: [
+                    {
+                        model: merchant,
+                    },
+                    {
+                        model: category,
+                        attributes: ["name"],
+                    },
+                ],
+            });
+            res.status(200).send({
+                status: true,
+                result,
+            });
         } catch (err) {
             console.log(err);
             res.status(400).send(err);

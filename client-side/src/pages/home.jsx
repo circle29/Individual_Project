@@ -1,13 +1,17 @@
 import { Outlet } from "react-router-dom";
-import { Heroes } from "../components/heroes";
 import { Navbar } from "../components/navbar";
+import { Products } from "../components/product";
+import { Heroes } from "../components/heroes";
 
 export const HomePage = () => {
-  return (
-    <div>
-      <Navbar />
-      <Heroes />
-      <Outlet />
-  </div>
-  );
+    return (
+        <div>
+            <Navbar />
+            <div className="home-container">
+                <Heroes />
+                <Products />
+                <Outlet />
+            </div>
+        </div>
+    );
 };

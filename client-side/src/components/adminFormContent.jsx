@@ -11,6 +11,7 @@ import {
     Text,
     useColorModeValue,
     Link,
+    Select,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -25,6 +26,7 @@ export const AdminFormContent = () => {
                 name: document.getElementById("name").value,
                 description: document.getElementById("description").value,
                 price: document.getElementById("price").value,
+                stock: document.getElementById("stock").value,
                 image: document.getElementById("image").value,
                 Category_id: document.getElementById("category").value,
             };
@@ -42,11 +44,17 @@ export const AdminFormContent = () => {
             document.getElementById("name").value = "";
             document.getElementById("description").value = "";
             document.getElementById("price").value = "";
+            document.getElementById("stock").value = "";
             document.getElementById("image").value = "";
             document.getElementById("category").value = "";
 
             //memberikan alert
             alert(result.data.message);
+
+            //akan diarahkan ke home ketika sudah mendaftarkan produk
+            setTimeout(() => {
+                navigate("/");
+            }, 1500);
         } catch (err) {
             alert(err.response.data);
         }
@@ -85,14 +93,22 @@ export const AdminFormContent = () => {
                                 <FormLabel>Price</FormLabel>
                                 <Input type="text" />
                             </FormControl>
+                            <FormControl id="stock" isRequired>
+                                <FormLabel>Stock</FormLabel>
+                                <Input type="text" />
+                            </FormControl>
                             <FormControl id="image" isRequired>
                                 <FormLabel>Image</FormLabel>
                                 <Input type="text" />
                             </FormControl>
-                            <FormControl id="category" isRequired>
-                                <FormLabel>Category</FormLabel>
-                                <Input type="text" />
-                            </FormControl>
+                            <Select id="category" placeholder="Select Category">
+                                <option value="1">Food</option>
+                                <option value="2">Fashion</option>
+                                <option value="3">Health</option>
+                                <option value="4">Entertainment</option>
+                                <option value="5">Electronics</option>
+                                <option value="6">Otomotif</option>
+                            </Select>
                         </VStack>
                         <Stack spacing={10} pt={2}>
                             <Button

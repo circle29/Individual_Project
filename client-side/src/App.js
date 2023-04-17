@@ -4,9 +4,11 @@ import { HomePage } from "./pages/home";
 import { LoginForm } from "./pages/login";
 import { RegistrationForm } from "./pages/register";
 import { ProfilePage } from "./pages/profilePage";
-import { AdminForm } from "./pages/adminForm";
+import { AddProduct } from "./pages/addProduct";
 import { RegisterMerchant } from "./pages/merchant";
 import Admin from "./pages/admin";
+import "./App.css";
+import { ProductID } from "./pages/productID";
 
 const router = createBrowserRouter([
     {
@@ -18,8 +20,9 @@ const router = createBrowserRouter([
     { path: "/register", element: <RegistrationForm /> },
     { path: "/profile", element: <ProfilePage /> },
     { path: "/admin", element: <Admin /> },
-    { path: "/adminForm", element: <AdminForm /> },
+    { path: "/addProduct", element: <AddProduct /> },
     { path: "/registerMerchant", element: <RegisterMerchant /> },
+    { path: "/product/:id", element: <ProductID /> },
 ]);
 
 function App() {

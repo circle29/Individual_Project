@@ -3,7 +3,7 @@ import Protection from "../components/protection";
 import { AdminFormContent } from "../components/adminFormContent";
 import { useSelector } from "react-redux";
 
-export const AdminForm = () => {
+export const AddProduct = () => {
     const { merchant_status } = useSelector((state) => state.userSlice.value);
     return (
         <div>

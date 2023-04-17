@@ -11,15 +11,27 @@ import {
     useColorModeValue,
     Link,
 } from "@chakra-ui/react";
+
+//importan redux
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/userSlice";
+
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export const RegisterMerchant = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const url = "http://localhost:2000/merchant/register";
 
     const onRegister = async () => {
+        const onSignOut = () => {
+            dispatch(logout());
+            localStorage.removeItem("token");
+            navigate("/login");
+        };
+
         try {
             const data = {
                 name: document.getElementById("name").value,
@@ -38,8 +50,11 @@ export const RegisterMerchant = () => {
             document.getElementById("name").value = "";
             document.getElementById("address").value = "";
 
-            //memberikan alert
+            //memberikan alert dan akan relog user untuk mereset token
             alert(result.data.message);
+            setTimeout(() => {
+                onSignOut();
+            }, 1500);
         } catch (err) {
             alert(err.response.data);
         }
