@@ -1,16 +1,18 @@
 import {
-    Box,
-    Heading,
+    Card,
+    CardBody,
+    Image,
+    Button,
+    ButtonGroup,
     Text,
-    Img,
-    Flex,
+    Heading,
+    CardFooter,
     Center,
-    HStack,
     SimpleGrid,
     Stack,
+    Select,
+    Input,
 } from "@chakra-ui/react";
-
-import { BsArrowUpRight, BsHeartFill, BsHeart } from "react-icons/bs";
 
 import { useNavigate } from "react-router-dom";
 
@@ -21,19 +23,45 @@ import { useState, useEffect } from "react";
 
 export function Products() {
     const [products, setProducts] = useState([]);
-    const [liked, setLiked] = useState(false);
+    const [sort, setSort] = useState(0);
+    const [category, setCategory] = useState(0);
+    const [name, setName] = useState("");
+    // const [paging, setPaging] = useState([]);
+    // const [pageNumber, setPageNumber] = useState(1);
+    // const [number, setNumber] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchProducts() {
-            const productData = await axios.get(
-                "http://localhost:2000/product/show"
-            );
+            let url;
+
+            switch (parseInt(sort)) {
+                //mengurutkan dari nama produk A-Z
+                case 1:
+                    url = `http://localhost:2000/product/show?order=name&sort=ASC&category=${category}&name=${name}`;
+                    break;
+                //mengurutkan nama Z-A
+                case 2:
+                    url = `http://localhost:2000/product/show?order=name&sort=DESC&category=${category}&name=${name}`;
+                    break;
+                //mengurutkan harga dari termahal - termurah
+                case 3:
+                    url = `http://localhost:2000/product/show?order=price&sort=DESC&category=${category}&name=${name}`;
+                    break;
+                //mengurutkan harga dari termurah - termahal
+                case 4:
+                    url = `http://localhost:2000/product/show?order=price&sort=ASC&category=${category}&name=${name}`;
+                    break;
+                default:
+                    url = `http://localhost:2000/product/show?order=createdAt&sort=ASC&category=${category}&name=${name}`;
+            }
+
+            const productData = await axios.get(url);
             console.log(productData.data.result);
             setProducts(productData.data.result);
         }
         fetchProducts();
-    }, []);
+    }, [sort, category, name]);
 
     function rupiah(price) {
         const priceString = price.toString();
@@ -51,95 +79,90 @@ export function Products() {
     return (
         <Stack spacing={8} mx={"auto"} w={"80%"} py={12} px={6}>
             <Stack align={"center"}>
-                {/* <Heading fontSize={"4xl"} textAlign={"center"}>
+                <Heading fontSize={"4xl"} textAlign={"center"} color="teal">
                     Available Products
-                </Heading> */}
+                </Heading>
+                <Input
+                    placeholder="Search Product Name"
+                    onChange={(e) => setName(e.target.value)}
+                />
+                <Select
+                    placeholder="Sort by"
+                    onChange={(e) => setSort(e.target.value)}
+                >
+                    <option value="1">Sort by Product Name A-Z</option>
+                    <option value="2">Sort by Product Name Z-A</option>
+                    <option value="3">Sort by Price Highest-Lowest</option>
+                    <option value="4">Sort by Price Lowest-Highest</option>
+                </Select>
+                <Select
+                    placeholder="Filter by Category"
+                    onChange={(e) => setCategory(e.target.value)}
+                >
+                    <option value="1">Food</option>
+                    <option value="2">Fashion</option>
+                    <option value="3">Health</option>
+                    <option value="4">Entertainment</option>
+                    <option value="5">Electronics</option>
+                    <option value="6">Otomotif</option>
+                </Select>
             </Stack>
             <Center py={6}>
                 <SimpleGrid columns={3} spacing={10}>
-                    {products.map((product) => (
-                        <Box
-                            w="xs"
-                            rounded={"sm"}
-                            my={5}
-                            mx={[5]}
-                            overflow={"hidden"}
-                            bg="white"
-                            border={"1px"}
-                            borderColor="black"
-                            boxShadow={"6px 6px 0 lightgreen"}
-                        >
-                            <Box
-                                h={"300px"}
-                                borderBottom={"1px"}
-                                borderColor="black"
+                    {products.map((product) => {
+                        return (
+                            <Card
+                                maxW="sm"
+                                css={{
+                                    border: "2px solid whitesmoke",
+                                }}
                             >
-                                <Img
-                                    src={product.image}
-                                    roundedTop={"sm"}
-                                    objectFit="cover"
-                                    h="full"
-                                    w="full"
-                                    alt={"Product Image"}
-                                />
-                            </Box>
-                            <Box p={4}>
-                                <Heading
-                                    color={"black"}
-                                    fontSize={"2xl"}
-                                    noOfLines={1}
-                                >
-                                    {product.name}
-                                </Heading>
-                                <Text color={"gray.700"} p={0}>
-                                    Item in stock: {product.stock}
-                                </Text>
-                                <Text color={"gray.500"} p={0}>
-                                    {product.description}
-                                </Text>
-                            </Box>
-                            <HStack borderTop={"1px"} color="black">
-                                <Flex
-                                    p={4}
-                                    alignItems="center"
-                                    justifyContent={"space-between"}
-                                    roundedBottom={"sm"}
-                                    cursor={"pointer"}
-                                    w="full"
-                                >
-                                    <Text
-                                        fontSize={"md"}
-                                        fontWeight={"semibold"}
-                                    >
-                                        {rupiah(product.price)}
-                                    </Text>
-                                    <BsArrowUpRight
-                                        onClick={() =>
-                                            navigate("/product/" + product.id)
-                                        }
+                                <CardBody>
+                                    <Image
+                                        src={product.image}
+                                        alt={product.name}
+                                        borderRadius="lg"
+                                        objectFit={"cover"}
+                                        h={"200px"}
+                                        w={"250px"}
+                                        css={{
+                                            border: "2px solid whitesmoke",
+                                        }}
                                     />
-                                </Flex>
-                                <Flex
-                                    p={4}
-                                    alignItems="center"
-                                    justifyContent={"space-between"}
-                                    roundedBottom={"sm"}
-                                    borderLeft={"1px"}
-                                    cursor="pointer"
-                                    onClick={() => setLiked(!liked)}
-                                >
-                                    {liked ? (
-                                        <BsHeartFill
-                                            fill="red"
-                                            fontSize={"24px"}
-                                        />
-                                    ) : (
-                                        <BsHeart fontSize={"24px"} />
-                                    )}
-                                </Flex>
-                            </HStack>
-                        </Box>
-                    ))}
+                                    <Stack mt="6" spacing="3">
+                                        <Heading size="md">
+                                            {product.name}
+                                        </Heading>
+                                        <Text>{rupiah(product.price)}</Text>
+                                        <div className="mt-2">
+                                            Items in Stock: {product.stock}
+                                        </div>
+                                    </Stack>
+                                </CardBody>
+                                <CardFooter>
+                                    <ButtonGroup spacing="2">
+                                        <Button
+                                            variant="solid"
+                                            colorScheme="teal"
+                                            onClick={() =>
+                                                navigate(
+                                                    "/product/" + product.id
+                                                )
+                                            }
+                                        >
+                                            Details
+                                        </Button>
+                                        <Button
+                                            variant="solid"
+                                            colorScheme="teal"
+                                        >
+                                            Add to cart
+                                        </Button>
+                                    </ButtonGroup>
+                                </CardFooter>
+                            </Card>
+                        );
+                    })}
                 </SimpleGrid>
             </Center>
         </Stack>

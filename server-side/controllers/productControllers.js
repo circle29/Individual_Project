@@ -4,6 +4,7 @@ const product = db.Product; //diambil dari file models dan modelname
 const user = db.User;
 const merchant = db.Merchant;
 const category = db.Category;
+const { Op } = require("sequelize");
 
 module.exports = {
     addProducts: async (req, res) => {
@@ -65,36 +66,45 @@ module.exports = {
         }
     },
     showProducts: async (req, res) => {
-        const result = await product.findAll({
-            attributes: [
-                "id",
-                "name",
-                "description",
-                "price",
-                "stock",
-                "image",
-                "Category_id",
-                "merchant_id",
-            ],
-        });
-        res.status(200).send({
-            status: true,
-            result,
-        });
-    },
-    catch(err) {
-        console.log(err);
-        res.status(400).send(err);
+        try {
+            const page = parseInt(req.query.page) || 1;
+            const pageSize = 9;
+
+            const categoryId = parseInt(req.query.category) || null;
+            const productName = req.query.name || null;
+
+            const categoryQuery = categoryId ? { Category_id: categoryId } : {};
+            const productQuery = productName
+                ? { name: { [Op.like]: "%" + productName + "%" } }
+                : {};
+
+            const result = await product.findAll({
+                where: {
+                    ...categoryQuery,
+                    ...productQuery,
+                },
+                order: [[req.query.order, req.query.sort]], // order by ... desc/asc
+                limit: pageSize,
+                offset: (page - 1) * pageSize,
+            });
+            res.status(200).send({
+                status: true,
+                result,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(400).send(err);
+        }
     },
     productDetails: async (req, res) => {
         try {
-            const query = `SELECT database_tokopedia.Products.id, database_tokopedia.Products.name AS product_name, database_tokopedia.Products.description,
-            database_tokopedia.Products.price, database_tokopedia.Products.image, database_tokopedia.Products.stock, database_tokopedia.Categories.id AS category_id,
-            database_tokopedia.Categories.name AS category, database_tokopedia.Merchants.id AS merchant_id, database_tokopedia.Merchants.name AS merchant_name,
-            database_tokopedia.Merchants.address FROM database_tokopedia.Products
-            INNER JOIN database_tokopedia.Categories ON database_tokopedia.Products.Category_id = database_tokopedia.Categories.id
-            INNER JOIN database_tokopedia.Merchants ON database_tokopedia.Products.merchant_id = database_tokopedia.Merchants.id
-            WHERE database_tokopedia.Products.id = ${req.params.id};`;
+            const query = `SELECT Products.id, Products.name AS product_name, Products.description, Products.price, Products.image, Products.stock,
+            Categories.id AS category_id, Categories.name AS category,
+            Merchants.id AS merchant_id, Merchants.name AS merchant_name, Merchants.address 
+            FROM Products
+            INNER JOIN Categories ON Products.Category_id = Categories.id
+            INNER JOIN Merchants ON Products.merchant_id = Merchants.id
+            WHERE Products.id = ${req.params.id};`;
             const [results] = await db.sequelize.query(query);
             res.status(200).send({
                 status: true,
@@ -124,24 +134,24 @@ module.exports = {
     //         result,
     //     });
     // },
-    paginationProducts: async (req, res) => {
-        const result = await product.findAll({
-            include: [
-                {
-                    model: merchant,
-                    attributes: ["name"],
-                },
-                {
-                    model: category,
-                    attributes: ["name"],
-                },
-            ],
-            limit: 9,
-            offset: (req.query.page - 1) * 9,
-        });
-        res.status(200).send({
-            status: true,
-            result,
-        });
-    },
+    //     paginationProducts: async (req, res) => {
+    //         const result = await product.findAll({
+    //             include: [
+    //                 {
+    //                     model: merchant,
+    //                     attributes: ["name"],
+    //                 },
+    //                 {
+    //                     model: category,
+    //                     attributes: ["name"],
+    //                 },
+    //             ],
+    //             limit: 9,
+    //             offset: (req.query.page - 1) * 9,
+    //         });
+    //         res.status(200).send({
+    //             status: true,
+    //             result,
+    //         });
+    //     },
 };

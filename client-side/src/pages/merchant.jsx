@@ -92,11 +92,8 @@ export const RegisterMerchant = () => {
                             <Button
                                 loadingText="Submitting"
                                 size="lg"
-                                bg={"blue.400"}
-                                color={"white"}
-                                _hover={{
-                                    bg: "blue.500",
-                                }}
+                                colorScheme="teal"
+                                variant="solid"
                                 onClick={onRegister}
                             >
                                 Sign up

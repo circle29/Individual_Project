@@ -6,9 +6,9 @@ import { RegistrationForm } from "./pages/register";
 import { ProfilePage } from "./pages/profilePage";
 import { AddProduct } from "./pages/addProduct";
 import { RegisterMerchant } from "./pages/merchant";
+import { ProductID } from "./pages/productID";
 import Admin from "./pages/admin";
 import "./App.css";
-import { ProductID } from "./pages/productID";
 
 const router = createBrowserRouter([
     {

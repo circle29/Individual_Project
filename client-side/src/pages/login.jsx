@@ -108,11 +108,8 @@ export const LoginForm = () => {
                                 </Link>
                             </Stack>
                             <Button
-                                bg={"blue.400"}
-                                color={"white"}
-                                _hover={{
-                                    bg: "blue.500",
-                                }}
+                                colorScheme="teal"
+                                variant="solid"
                                 onClick={onLogin}
                             >
                                 Sign in
