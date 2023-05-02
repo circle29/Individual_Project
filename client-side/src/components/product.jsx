@@ -15,20 +15,19 @@ import {
 } from "@chakra-ui/react";
 
 import { useNavigate } from "react-router-dom";
+import { Pagination } from "semantic-ui-react";
+import "semantic-ui-css/semantic.min.css";
 
 import axios from "axios";
 import { useState, useEffect } from "react";
-
-// const IMAGE = "https://picsum.photos/300";
 
 export function Products() {
     const [products, setProducts] = useState([]);
     const [sort, setSort] = useState(0);
     const [category, setCategory] = useState(0);
     const [name, setName] = useState("");
-    // const [paging, setPaging] = useState([]);
-    // const [pageNumber, setPageNumber] = useState(1);
-    // const [number, setNumber] = useState(0);
+    const [activePage, setActivePage] = useState(1);
+    const [totalPage, setTotalPage] = useState(1);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -38,30 +37,31 @@ export function Products() {
             switch (parseInt(sort)) {
                 //mengurutkan dari nama produk A-Z
                 case 1:
-                    url = `http://localhost:2000/product/show?order=name&sort=ASC&category=${category}&name=${name}`;
+                    url = `http://localhost:2000/product/show?order=name&sort=ASC&category=${category}&name=${name}&page=${activePage}`;
                     break;
                 //mengurutkan nama Z-A
                 case 2:
-                    url = `http://localhost:2000/product/show?order=name&sort=DESC&category=${category}&name=${name}`;
+                    url = `http://localhost:2000/product/show?order=name&sort=DESC&category=${category}&name=${name}&page=${activePage}`;
                     break;
                 //mengurutkan harga dari termahal - termurah
                 case 3:
-                    url = `http://localhost:2000/product/show?order=price&sort=DESC&category=${category}&name=${name}`;
+                    url = `http://localhost:2000/product/show?order=price&sort=DESC&category=${category}&name=${name}&page=${activePage}`;
                     break;
                 //mengurutkan harga dari termurah - termahal
                 case 4:
-                    url = `http://localhost:2000/product/show?order=price&sort=ASC&category=${category}&name=${name}`;
+                    url = `http://localhost:2000/product/show?order=price&sort=ASC&category=${category}&name=${name}&page=${activePage}`;
                     break;
                 default:
-                    url = `http://localhost:2000/product/show?order=createdAt&sort=ASC&category=${category}&name=${name}`;
+                    url = `http://localhost:2000/product/show?order=createdAt&sort=DESC&category=${category}&name=${name}&page=${activePage}`;
             }
 
             const productData = await axios.get(url);
-            console.log(productData.data.result);
+            console.log(productData.data);
             setProducts(productData.data.result);
+            setTotalPage(Math.ceil(productData.data.count / 9));
         }
         fetchProducts();
-    }, [sort, category, name]);
+    }, [sort, category, name, activePage]);
 
     function rupiah(price) {
         const priceString = price.toString();
@@ -164,6 +164,17 @@ export function Products() {
                         );
                     })}
                 </SimpleGrid>
+            </Center>
+            <Center>
+                <Pagination
+                    activePage={activePage}
+                    totalPages={totalPage}
+                    //untuk mengganti halaman
+                    onPageChange={(e, pageInfo) => {
+                        setActivePage(pageInfo.activePage);
+                        console.log(pageInfo);
+                    }}
+                />
             </Center>
         </Stack>
     );

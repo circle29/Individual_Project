@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-    class Product extends Model {
+    class Transaction_detail extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -9,50 +9,37 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            Product.belongsTo(models.Merchant, {
-                foreignKey: {
-                    name: "merchant_id",
-                },
-            });
-            Product.belongsTo(models.Category, {
-                foreignKey: {
-                    name: "Category_id",
-                },
-            });
-            Product.hasMany(models.Transaction_detail, {
+            Transaction_detail.belongsTo(models.Product, {
                 foreignKey: {
                     name: "product_id",
                 },
             });
+            Transaction_detail.belongsTo(models.Transaction_header, {
+                foreignKey: {
+                    name: "transaction_header_id",
+                },
+            });
         }
     }
-    Product.init(
+    Transaction_detail.init(
         {
-            name: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            description: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            price: {
+            quantity: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
-            stock: {
-                type: DataTypes.INTEGER,
+            product_name: {
+                type: DataTypes.STRING,
                 allowNull: false,
             },
-            image: {
-                type: DataTypes.STRING,
+            product_price: {
+                type: DataTypes.INTEGER,
                 allowNull: false,
             },
         },
         {
             sequelize,
-            modelName: "Product",
+            modelName: "Transaction_detail",
         }
     );
-    return Product;
+    return Transaction_detail;
 };

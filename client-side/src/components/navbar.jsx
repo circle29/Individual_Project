@@ -76,6 +76,7 @@ export const Navbar = () => {
                                     >
                                         Profile
                                     </MenuItem>
+                                    <MenuItem>My Merchant</MenuItem>
                                     <MenuItem>Setting</MenuItem>
                                     {merchant_status ? (
                                         <MenuItem

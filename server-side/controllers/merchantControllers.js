@@ -61,23 +61,43 @@ module.exports = {
             res.status(400).send(err);
         }
     },
+    // merchantProducts: async (req, res) => {
+    //     try {
+    //         const result = await product.findAll({
+    //             where: { merchant_id: req.params.id },
+    //             include: [
+    //                 {
+    //                     model: merchant,
+    //                 },
+    //                 {
+    //                     model: category,
+    //                     attributes: ["name"],
+    //                 },
+    //             ],
+    //         });
+    //         res.status(200).send({
+    //             status: true,
+    //             result,
+    //         });
+    //     } catch (err) {
+    //         console.log(err);
+    //         res.status(400).send(err);
+    //     }
+    // },
     merchantProducts: async (req, res) => {
         try {
-            const result = await product.findAll({
-                where: { merchant_id: req.params.id },
-                include: [
-                    {
-                        model: merchant,
-                    },
-                    {
-                        model: category,
-                        attributes: ["name"],
-                    },
-                ],
-            });
+            const query = `SELECT Products.id, Products.name AS product_name, Products.description, Products.price, Products.image, Products.stock,
+            Categories.id AS category_id, Categories.name AS category,
+            Merchants.id AS merchant_id, Merchants.name AS merchant_name, Merchants.address
+            FROM Products
+            INNER JOIN Categories ON Products.Category_id = Categories.id
+            INNER JOIN Merchants ON Products.merchant_id = Merchants.id
+            WHERE Products.merchant_id = ${req.params.id};
+            `;
+            const [results] = await db.sequelize.query(query);
             res.status(200).send({
                 status: true,
-                result,
+                results,
             });
         } catch (err) {
             console.log(err);

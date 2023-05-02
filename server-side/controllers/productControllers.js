@@ -78,7 +78,7 @@ module.exports = {
                 ? { name: { [Op.like]: "%" + productName + "%" } }
                 : {};
 
-            const result = await product.findAll({
+            const result = await product.findAndCountAll({
                 where: {
                     ...categoryQuery,
                     ...productQuery,
@@ -89,7 +89,8 @@ module.exports = {
             });
             res.status(200).send({
                 status: true,
-                result,
+                count: result.count,
+                result: result.rows,
             });
         } catch (err) {
             console.log(err);
