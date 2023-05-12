@@ -33,21 +33,17 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 unique: "email",
             },
-            phone_number: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                unique: "phone_number",
-            },
-            merchant_status: {
-                type: DataTypes.BOOLEAN,
-                defaultValue: false,
-            },
             password: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
                     len: [8],
                 },
+            },
+            is_verfied: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false,
             },
         },
         {

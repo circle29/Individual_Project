@@ -2,25 +2,27 @@ const db = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const user = db.User;
+const nodemailer = require("../helpers/nodemailer");
+const { Op } = require("sequelize");
 
 module.exports = {
     register: async (req, res) => {
         try {
-            const {
-                username,
-                email,
-                phone_number,
-                password,
-                password_confirmation,
-            } = req.body;
+            const { username, email, password, password_confirmation } =
+                req.body;
 
             console.log(req.body);
 
-            if (!username || !email || !phone_number || !password)
+            if (!username || !email || !password)
                 throw "please complete your data";
 
             if (password !== password_confirmation)
                 throw "Password does not match";
+
+            const passwordRegex =
+                /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+])[0-9a-zA-Z!@#$%^&*()_+]{8,}$/;
+            if (!passwordRegex.test(password))
+                throw "Password must contain at least 8 characters including an uppercase letter, a symbol, and a number";
 
             const salt = await bcrypt.genSalt(10);
             const hashPass = await bcrypt.hash(password, salt);
@@ -28,9 +30,26 @@ module.exports = {
             const result = await user.create({
                 username,
                 email,
-                phone_number,
                 password: hashPass,
             });
+
+            let payload = { id: result.id };
+            const token = jwt.sign(payload, "faud", { expiresIn: "1h" });
+
+            let mail = {
+                from: `Admin <randomfactsfaud@gmail.com>`,
+                to: `${email}`,
+                subject: `Verfied your account`,
+                html: `
+                <div>
+                <p>Thank you for registering, you need to activate your account,</p>
+                <a href="http://localhost:3000/user/verification/${token}">Click Here</a>
+                <span>to activate</span>
+                </div>
+                `,
+            };
+            let response = await nodemailer.sendMail(mail);
+            console.log(response);
 
             res.status(200).send({
                 status: true,
@@ -44,13 +63,17 @@ module.exports = {
     },
     login: async (req, res) => {
         try {
-            const { email, password } = req.body;
+            const { emailOrUsername, password } = req.body;
 
-            if (!email || !password) throw "please complete your data";
+            if (!emailOrUsername || !password)
+                throw "please complete your data";
 
             const userExist = await user.findOne({
                 where: {
-                    email,
+                    [Op.or]: [
+                        { email: emailOrUsername },
+                        { username: emailOrUsername },
+                    ],
                 },
             });
 
@@ -60,7 +83,6 @@ module.exports = {
                     message: "User not found",
                 };
 
-            //mengcompare password yang diinput dengan password yang ada di database
             const isvalid = await bcrypt.compare(password, userExist.password);
 
             if (!isvalid)
@@ -69,7 +91,6 @@ module.exports = {
                     message: "Wrong password",
                 };
 
-            //payload adalah data data yang akan disimpan didalam token
             const payload = {
                 id: userExist.id,
                 merchant_status: userExist.mer,

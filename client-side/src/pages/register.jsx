@@ -27,7 +27,6 @@ export const RegistrationForm = () => {
             const data = {
                 username: document.getElementById("username").value,
                 email: document.getElementById("email").value,
-                phone_number: document.getElementById("phone_number").value,
                 password: document.getElementById("password").value,
                 password_confirmation:
                     document.getElementById("confirmation").value,
@@ -41,7 +40,6 @@ export const RegistrationForm = () => {
 
             document.getElementById("username").value = "";
             document.getElementById("email").value = "";
-            document.getElementById("phone_number").value = "";
             document.getElementById("password").value = "";
             document.getElementById("confirmation").value = "";
 
@@ -79,10 +77,6 @@ export const RegistrationForm = () => {
                         <FormControl id="email" isRequired>
                             <FormLabel>Email Address</FormLabel>
                             <Input type="email" />
-                        </FormControl>
-                        <FormControl id="phone_number" isRequired>
-                            <FormLabel>Phone Number</FormLabel>
-                            <Input type="text" />
                         </FormControl>
                         <FormControl id="password" isRequired>
                             <FormLabel>Password</FormLabel>

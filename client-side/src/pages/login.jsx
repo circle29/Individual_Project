@@ -27,7 +27,7 @@ export const LoginForm = () => {
     const onLogin = async () => {
         try {
             const data = {
-                email: document.getElementById("email").value,
+                emailOrUsername: document.getElementById("email").value,
                 password: document.getElementById("password").value,
             };
 
@@ -86,8 +86,8 @@ export const LoginForm = () => {
                 >
                     <Stack spacing={4}>
                         <FormControl id="email">
-                            <FormLabel>Email address</FormLabel>
-                            <Input type="email" />
+                            <FormLabel>Email Address or Username</FormLabel>
+                            <Input type="text" />
                         </FormControl>
                         <FormControl id="password">
                             <FormLabel>Password</FormLabel>
