@@ -8,10 +8,10 @@ server.use(express.json());
 server.use(cors());
 
 const {
-    authRouters,
-    merchantRouters,
-    productRouters,
-    transactionRouters,
+  authRouters,
+  merchantRouters,
+  productRouters,
+  transactionRouters,
 } = require("./routers");
 
 server.use("/auth", authRouters);
@@ -20,6 +20,6 @@ server.use("/product", productRouters);
 server.use("/transaction", transactionRouters);
 
 server.listen(PORT, () => {
-    // db.sequelize.sync({ alter: true });
-    console.log("Success Running at PORT: " + PORT);
+  // db.sequelize.sync({ alter: true });
+  console.log("Success Running at PORT: " + PORT);
 });
