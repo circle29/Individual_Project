@@ -1,11 +1,13 @@
 const authRouters = require("./authRouters");
-const merchantRouters = require("./merchantRouters");
-const productRouters = require("./productRouters");
-const transactionRouters = require("./transactionRouters");
+const postRouters = require("./postRouters");
+const likeRouters = require("./likeRouters");
+const commentControllers = require("./commentRouters");
+const profileRouters = require("./profileRouters");
 
 module.exports = {
-    authRouters,
-    merchantRouters,
-    productRouters,
-    transactionRouters,
+  authRouters,
+  postRouters,
+  likeRouters,
+  commentControllers,
+  profileRouters,
 };

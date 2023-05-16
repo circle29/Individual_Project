@@ -38,7 +38,7 @@ export const RegistrationForm = () => {
       };
 
       console.log(data);
-      const url = "http://localhost:2000/auth/register";
+      const url = "http://localhost:2000/api/auth/register";
       const result = await axios.post(url, data);
       console.log(result);
 
@@ -49,14 +49,14 @@ export const RegistrationForm = () => {
 
       alert(result.data.message);
     } catch (err) {
-      alert(err.response.data);
+      alert(err.response.data.message);
     }
   };
 
-  // const handleSubmit = (e) => {
-  //   console.log("re");
-  //   onRegister();
-  // };
+  const handleSubmit = (e) => {
+    console.log("re");
+    onRegister();
+  };
 
   return (
     <Flex
@@ -77,7 +77,7 @@ export const RegistrationForm = () => {
           boxShadow={"lg"}
           p={8}
         >
-          <Form>
+          <Form onSubmit={onRegister}>
             <Stack spacing={4}>
               <FormControl id="username" isRequired>
                 <FormLabel>Username</FormLabel>
@@ -121,11 +121,11 @@ export const RegistrationForm = () => {
               </FormControl>
               <Stack spacing={10} pt={2}>
                 <Button
-                  type="submit"
-                  loadingText="Submitting"
-                  size="lg"
-                  colorScheme="teal"
+                  colorScheme="blue"
+                  bgGradient="linear(to-r, blue.300, blue.400, blue.500)"
+                  color="white"
                   variant="solid"
+                  type="submit"
                   // onClick={onRegister}
                 >
                   Sign up

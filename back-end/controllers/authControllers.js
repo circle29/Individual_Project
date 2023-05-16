@@ -1,4 +1,4 @@
-const { register, login, verification } = require("../services/userService.js");
+const { register, login, verification } = require("../services/authService.js");
 
 const registerAuth = async (request, response) => {
   const [statusCode, message] = await register(request);
@@ -20,4 +20,4 @@ const verificationAuth = async (request, response) => {
   return response.status(statusCode).send(message);
 };
 
-module.exports = { registerAuth, verificationAuth, login };
+module.exports = { registerAuth, verificationAuth, loginAuth };

@@ -13,28 +13,28 @@ module.exports = {
     try {
       const { username, email, password, password_confirmation } = req.body;
 
-      // console.log(req.body);
-
       const isUserAlreadyExist = await user.findOne({
         where: {
           [Op.or]: [{ email }, { username }],
         },
       });
-      console.log(isUserAlreadyExist);
 
       if (isUserAlreadyExist) {
-        return [409, "Username or Email Already Exist!"];
+        throw Error("Username or Email Already Exist!");
       }
 
       if (!username || !email || !password)
-        throw "please complete all your data";
+        throw Error("please complete all your data");
 
-      if (password !== password_confirmation) throw "Password does not match!";
+      if (password !== password_confirmation)
+        throw Error("Password does not match!");
 
       const passwordRegex =
         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+])[0-9a-zA-Z!@#$%^&*()_+]{8,}$/;
       if (!passwordRegex.test(password))
-        throw "Password must contain at least 8 characters including an uppercase letter, a symbol, and a number";
+        throw Error(
+          "Password must contain at least 8 characters including an uppercase letter, a symbol, and a number"
+        );
 
       const salt = await bcrypt.genSalt(10);
       const hashPass = await bcrypt.hash(password, salt);
@@ -46,7 +46,16 @@ module.exports = {
       });
 
       let payload = { id: result.id };
-      const token = jwt.sign(payload, "auth", { expiresIn: "1h" });
+      const token = jwt.sign(payload, "auth", { expiresIn: "24h" });
+
+      const newToken = await user.update(
+        { verification_token: token },
+        {
+          where: {
+            id: result.id,
+          },
+        }
+      );
 
       const link = `http://localhost:3000/auth/verification/${token}`;
 
@@ -69,16 +78,14 @@ module.exports = {
 
       let response = {};
       if (emailResponse.accepted && emailResponse.accepted.length > 0) {
-        // Success
         response = {
           status: true,
           data: result,
           message: "register success",
         };
       } else {
-        // Failed
         response = {
-          status: false,
+          status: true,
           data: result,
           message: "register success, failed to send email",
         };
@@ -86,7 +93,14 @@ module.exports = {
 
       return [200, response];
     } catch (err) {
-      return [400, err];
+      let response = {
+        status: false,
+        message: err.message,
+        data: null,
+      };
+
+      console.log(err);
+      return [400, response];
     }
   },
 
@@ -105,8 +119,14 @@ module.exports = {
       };
       return [200, response];
     } catch (err) {
+      let response = {
+        status: false,
+        message: err.message,
+        data: null,
+      };
+
       console.log(err);
-      return [400, err];
+      return [400, response];
     }
   },
 
@@ -114,7 +134,8 @@ module.exports = {
     try {
       const { emailOrUsername, password } = req.body;
 
-      if (!emailOrUsername || !password) throw "please complete all your data";
+      if (!emailOrUsername || !password)
+        throw Error("please complete all your data");
 
       const userExist = await user.findOne({
         where: {
@@ -122,35 +143,38 @@ module.exports = {
         },
       });
 
-      if (!userExist)
-        throw {
-          status: false,
-          message: "User not found",
-        };
+      if (!userExist) throw Error("User not found");
 
       const isvalid = await bcrypt.compare(password, userExist.password);
 
-      if (!isvalid)
-        throw {
-          status: false,
-          message: "Wrong password",
-        };
+      if (!isvalid) throw Error("Wrong password");
 
       const payload = {
         id: userExist.id,
-        merchant_status: userExist.mer,
+        is_verified: userExist.is_verified,
       };
       const token = jwt.sign(payload, "auth", { expiresIn: "1h" });
 
-      res.status(200).send({
+      //mengambil id dari bearer token
+      const verifiedUser = jwt.verify(token, "auth");
+
+      //pengecekan verifikasi
+      let response = {
         status: true,
-        message: "login success",
+        message: "Login success",
         data: userExist,
         token,
-      });
+      };
+      return [200, response];
     } catch (err) {
+      let response = {
+        status: false,
+        message: err.message,
+        data: null,
+      };
+
       console.log(err);
-      res.status(400).send(err);
+      return [400, response];
     }
   },
 };

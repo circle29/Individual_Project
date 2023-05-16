@@ -1,11 +1,13 @@
 const authControllers = require("./authControllers");
-const merchantControllers = require("./merchantControllers");
-const productControllers = require("./productControllers");
-const transactionControllers = require("./transactionControllers");
+const likeControllers = require("./likeControllers");
+const postControllers = require("./postControllers");
+const commentControllers = require("./commentControllers");
+const profileControllers = require("./profileControllers");
 
 module.exports = {
-    authControllers,
-    merchantControllers,
-    productControllers,
-    transactionControllers,
+  authControllers,
+  postControllers,
+  likeControllers,
+  commentControllers,
+  profileControllers,
 };

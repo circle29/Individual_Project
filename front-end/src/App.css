@@ -1,11 +1,15 @@
 * {
-    font-family: "Nunito", sans-serif !important;
+  font-family: "Nunito", sans-serif !important;
 }
 
 .navbar-brand {
-    width: 180px;
+  width: 180px;
 }
 
 .cart-button {
-    color: rgb(16, 172, 16) !important;
+  color: rgb(16, 172, 16) !important;
+}
+
+.welcome-page {
+  display: flex !important;
 }

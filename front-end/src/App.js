@@ -4,27 +4,24 @@ import { HomePage } from "./pages/home";
 import { LoginForm } from "./pages/login";
 import { RegistrationForm } from "./pages/register";
 import { ProfilePage } from "./pages/profilePage";
-import { AddProduct } from "./pages/addProduct";
-import { RegisterMerchant } from "./pages/merchant";
-import { ProductID } from "./pages/productID";
 import Verification, { verification } from "./pages/verificationPage";
-import Admin from "./pages/admin";
+import { PostList } from "./pages/postList";
+import { PostDetail } from "./pages/postDetail";
+
 import "./App.css";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <HomePage />,
+    path: "/home",
+    element: <PostList />,
     errorElement: <ErrorPage />,
   },
-  { path: "/login", element: <LoginForm /> },
+  { path: "/", element: <LoginForm /> },
   { path: "/register", element: <RegistrationForm /> },
   { path: "/profile", element: <ProfilePage /> },
-  { path: "/admin", element: <Admin /> },
-  { path: "/addProduct", element: <AddProduct /> },
-  { path: "/registerMerchant", element: <RegisterMerchant /> },
-  { path: "/product/:id", element: <ProductID /> },
   { path: "/auth/verification/:token", element: <Verification /> },
+  { path: "/post/:id", element: <PostDetail /> },
+  { path: "/post", element: <PostList /> },
 ]);
 
 function App() {

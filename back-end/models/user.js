@@ -9,12 +9,22 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.hasOne(models.Merchant, {
+      User.hasOne(models.Profile, {
         foreignKey: {
           name: "user_id",
         },
       });
-      User.hasMany(models.Transaction_header, {
+      User.hasMany(models.Post, {
+        foreignKey: {
+          name: "user_id",
+        },
+      });
+      User.hasOne(models.Like, {
+        foreignKey: {
+          name: "user_id",
+        },
+      });
+      User.hasOne(models.Comment, {
         foreignKey: {
           name: "user_id",
         },
@@ -40,10 +50,29 @@ module.exports = (sequelize, DataTypes) => {
           len: [8],
         },
       },
+      full_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: null,
+      },
+      bio: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        defaultValue: null,
+      },
+      image: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: null,
+      },
       is_verified: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,
+      },
+      verification_token: {
+        type: DataTypes.STRING,
+        // allowNull: false,
       },
     },
     {

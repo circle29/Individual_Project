@@ -3,21 +3,26 @@ const PORT = 2000;
 const server = express();
 const cors = require("cors");
 const db = require("./models");
+const path = require("path");
 
 server.use(express.json());
 server.use(cors());
 
+server.use(express.static(path.join(__dirname, "public")));
+
 const {
   authRouters,
-  merchantRouters,
-  productRouters,
-  transactionRouters,
+  postRouters,
+  likeRouters,
+  commentControllers,
+  profileRouters,
 } = require("./routers");
 
-server.use("/auth", authRouters);
-server.use("/merchant", merchantRouters);
-server.use("/product", productRouters);
-server.use("/transaction", transactionRouters);
+server.use("/api/auth", authRouters);
+server.use("/api/post", postRouters);
+server.use("/api/like", likeRouters);
+server.use("/api/comment", commentControllers);
+server.use("/api/profile", profileRouters);
 
 server.listen(PORT, () => {
   // db.sequelize.sync({ alter: true });
